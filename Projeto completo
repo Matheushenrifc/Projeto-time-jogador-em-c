@@ -1,0 +1,257 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct _jogador {
+    char nomejogador[40];
+    char timeatual[40];
+    int idade;
+} Jogador;
+
+typedef struct _time {
+    char nome[40];
+    char estado[15];
+    int numjogadores;
+    Jogador jogadores[11];
+} Time;
+
+// Função para cadastrar um novo time
+Time cadastrarTime() {
+    Time novoTime;
+    printf("Digite o nome do Time:\n");
+    scanf(" %[^\n]s", novoTime.nome);
+    printf("Digite o estado do Time:\n");
+    scanf(" %[^\n]s", novoTime.estado);
+    novoTime.numjogadores = 0; // Inicializa o número de jogadores
+    printf("\n");
+    return novoTime;
+}
+
+// Função para listar os times cadastrados
+void listarTimes(Time times[], int numTimes) {
+    int i;
+    for (i = 0; i < numTimes; i++) {
+        printf("%d - %s\n", i + 1, times[i].nome);
+    }
+    printf("\n");
+}
+
+// Função para editar informações de um time
+void editarTimes(Time times[], int numTimes) {
+    char nomeTime[40];
+    int i, opcao;
+
+    printf("Digite o nome do Time para editar: ");
+    scanf(" %[^\n]s", nomeTime);
+
+    for (i = 0; i < numTimes; i++) {
+        if (strcmp(nomeTime, times[i].nome) == 0) {
+            printf("Digite:\n");
+            printf("  1 para editar o nome: \n");
+            printf("  2 para editar o estado: \n");
+            scanf(" %d", &opcao);
+            switch (opcao) {
+                case 1:
+                    printf("Digite o novo nome do Time:\n ");
+                    scanf(" %[^\n]s", times[i].nome);
+                    break;
+                case 2:
+                    printf("Digite o novo estado do Time:\n ");
+                    scanf(" %[^\n]s", times[i].estado);
+                    break;
+                default:
+                    printf("Opção inválida!\n\n");
+                    return;
+            }
+            printf("Operação realizada com sucesso!\n\n");
+            return;
+        }
+    }
+    printf("Time não encontrado!\n\n");
+}
+
+// Função para remover um time
+void removerTime(Time times[], int *numTimes) {
+    char nomeTimes[40];
+    int i, encontrei = 0;
+    printf("Digite o nome do Time para remover: ");
+    scanf(" %[^\n]s", nomeTimes);
+    for (i = 0; i < *numTimes; i++) {
+        if (strcmp(nomeTimes, times[i].nome) == 0) {
+            encontrei = 1;
+            (*numTimes)--;
+            for (int j = i; j < *numTimes; j++) {
+                times[j] = times[j + 1];
+            }
+        }
+    }
+    if (encontrei) {
+        printf("Time removido!\n\n");
+    } else {
+        printf("Time não encontrado!\n\n");
+    }
+}
+
+// Função para cadastrar um novo jogador
+Jogador cadastrarJogador(Time times[40], int numTimes, int *numJogadores) {
+    char nomeTime[40];
+    int i, encontrei = 0;
+    Jogador novoJogador;
+
+    printf("Digite o nome do Time para cadastrar o jogador: ");
+    scanf(" %[^\n]s", nomeTime);
+
+    for (i = 0; i < numTimes; i++) {
+        if (strcmp(nomeTime, times[i].nome) == 0) {
+            encontrei = 1;
+            if (times[i].numjogadores < 11) {
+                printf("Digite o nome do Jogador:\n");
+                scanf(" %[^\n]s", novoJogador.nomejogador);
+                strcpy(novoJogador.timeatual, times[i].nome);
+                times[i].jogadores[times[i].numjogadores] = novoJogador;
+                times[i].numjogadores++;
+                (*numJogadores)++;
+                printf("Digite a idade do Jogador:\n");
+                scanf("%d", &novoJogador.idade);
+            } else {
+                printf("O time ja possui o namero maximo de jogadores.\n");
+            }
+            break;
+        }
+    }
+
+    if (!encontrei) {
+        printf("Time não encontrado\n");
+    }
+    return novoJogador;
+}
+
+// Função para editar informações de um jogador
+void editarJogador(Time times[], int numTimes, Jogador jogador[], int numJogadores) {
+    char nomeJogador[40];
+    int i, opcao;
+
+    printf("Digite o nome do Jogador para editar: ");
+    scanf(" %[^\n]s", nomeJogador);
+
+    for (i = 0; i < numJogadores; i++) {
+        if (strcmp(nomeJogador, jogador[i].nomejogador) == 0) {
+            printf("Digite:\n");
+            printf("  1 para editar o nome\n");
+            printf("  2 para editar o time atual\n");
+            printf("  3 para editar a idade\n");
+            scanf(" %d", &opcao);
+            switch (opcao) {
+                case 1:
+                    printf("Digite o novo nome do Jogador:\n");
+                    scanf(" %[^\n]s", jogador[i].nomejogador);
+                    break;
+                case 2:
+                    printf("Digite o novo Time do Jogador:\n");
+                    scanf(" %[^\n]s", jogador[i].timeatual);
+                    break;
+                case 3:
+                    printf("Digite a nova idade do Jogador:\n");
+                    scanf(" %d", &jogador[i].idade);
+                    break;
+                default:
+                    printf("Opção inválida!\n\n");
+                    return;
+            }
+            printf("Operação realizada com sucesso!\n\n");
+            return;
+        }
+    }
+    printf("Jogador não encontrado!\n\n");
+}
+
+// Função para remover um jogador
+void removerJogador(Jogador jogador[], int *numJogadores) {
+    char nomeJogador[40];
+    int i, encontrei = 0;
+    printf("Digite o nome do Jogador para remover: ");
+    scanf(" %[^\n]s", nomeJogador);
+    for (i = 0; i < *numJogadores; i++) {
+        if (strcmp(nomeJogador, jogador[i].nomejogador) == 0) {
+            encontrei = 1;
+            (*numJogadores)--;
+            for (int j = i; j < *numJogadores; j++) {
+                jogador[j] = jogador[j + 1];
+            }
+        }
+    }
+    if (encontrei) {
+        printf("Jogador removido!\n\n");
+    } else {
+        printf("Jogador não encontrado!\n\n");
+    }
+}
+
+// Função para listar jogadores cadastrados
+void listarJogador(Jogador jogador[], int numJogadores) {
+    int i;
+    for (i = 0; i < numJogadores; i++) {
+        printf("%d - %s\n", i + 1, jogador[i].nomejogador);
+    }
+    printf("\n");
+}
+
+int main() {
+    Time times[100];
+    Jogador jogador[100];
+    int numTimes = 0;
+    int numJogadores = 0;
+    int opcao;
+    while (1) {
+        printf("Digite:\n");
+        printf("  1 para cadastrar um novo time\n");
+        printf("  2 para listar os times cadastrados\n");
+        printf("  3 para editar um time\n");
+        printf("  4 para remover um time\n");
+        printf("  5 para cadastrar um novo jogador\n");
+        printf("  6 para listar os jogadores cadastrados\n");
+        printf("  7 para editar jogador cadastrado\n");
+        printf("  8 para remover um jogador\n");
+        printf("  9 para sair do programa\n");
+        scanf(" %d", &opcao);
+        switch (opcao) {
+            case 1:
+                times[numTimes] = cadastrarTime();
+                numTimes++;
+                break;
+            case 2:
+                listarTimes(times, numTimes);
+                break;
+            case 3:
+                editarTimes(times, numTimes);
+                break;
+            case 4:
+                removerTime(times, &numTimes);
+                break;
+            case 5:
+                if (numTimes == 0) {
+                    printf("he necessario ter pelo menos um time cadastrado.\n");
+                    break;
+                }
+                printf("Cadastrar jogador:\n");
+                Jogador novoJogador = cadastrarJogador(times, numTimes, &numJogadores);
+                break;
+            case 6:
+                listarJogador(jogador, numJogadores);
+                break;
+            case 7:
+                editarJogador(times, numTimes, jogador, numJogadores);
+                break;
+            case 8:
+                removerJogador(jogador, &numJogadores);
+                break;
+            case 9:
+            printf("saindo....");
+                exit(0);
+            default:
+                printf("Opcao invalida!\n\n");
+        }
+    }
+
+    return 0;
+}
